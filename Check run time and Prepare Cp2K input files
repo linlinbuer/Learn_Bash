@@ -1,0 +1,26 @@
+#!/bin/bash
+startfs=$(sed -n '2p' MD$2/PD-1.ener | awk '{print $2}')
+endfs=$(sed -n '$p' MD$2/PD-1.ener | awk '{print $2}')
+startps=`echo "scale=2; $startfs/1000" | bc`
+endps=`echo "scale=2; $endfs/1000" | bc`
+runtime=`echo "scale=2; $endps - $startps" | bc`
+
+echo "start time =" $startps "ps"
+echo "end time =" $endps "ps"
+echo "time runned =" $runtime "ps"
+
+
+#grep -q output only the code, 0 if find 'program end' 1 if nothing found, 0 is mapped to ture in if and 1 is mapped to false in if
+
+if grep -q "PROGRAM END" MD$2/Equil.out; then
+    echo "Well done XD";
+    mkdir MD$1;
+    cp MD$2/PD-RESTART.wfn  MD$1/old-RESTART.wfn;
+    cp MD$2/PD-1.restart  MD$1/Equil.inp;
+    cp MD$2/GTH_POTENTIALS MD$1/;
+    cp MD$2/BASIS_MOLOPT MD$1/;
+    cp MD$2/irene2.sh MD$1/
+else
+    echo "Patient,babe! Not finished yet. ;)"
+fi
+~       
